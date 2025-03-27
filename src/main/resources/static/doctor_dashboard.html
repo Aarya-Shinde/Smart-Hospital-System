@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="dashboard_styles.css">
+</head>
+<body>
+<header>
+    <h2>Doctor Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+</header>
+<main>
+    <p>Welcome, Doctor! Manage your appointments and patient records here.</p>
+    <section>
+        <h3>Assign Medicine</h3>
+        <form id="assignMedicineForm">
+            <label for="patientId">Patient ID:</label>
+            <input type="number" id="patientId" required>
+
+            <label for="medicineSelect">Select Medicines:</label>
+            <select id="medicineSelect" multiple required></select>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" required>
+
+            <button type="submit">Assign Medicine</button>
+
+        </form>
+        <p id="assignResult"></p>
+    </section>
+
+    <h3>Assigned Medicines</h3>
+    <ul id="assignedMedicines"></ul>
+
+    <script>
+        function loadMedicines() {
+            fetch("/medicine/all")
+            .then(response => response.json())
+            .then(medicines => {
+                const medicineSelect = document.getElementById("medicineSelect");
+                medicineSelect.innerHTML = "";
+                medicines.forEach(med => {
+                    const option = document.createElement("option");
+                    option.value = med.id;
+                    option.textContent = med.name;
+                    medicineSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching medicines:", error));
+        }
+
+function loadAssignedMedicines() {
+    fetch("/medicine/assigned/all")
+    .then(response => response.json())
+    .then(data => {
+        if (!Array.isArray(data)) {
+            console.error("Invalid data format:", data);
+            return;
+        }
+        const medicineList = document.getElementById("assignedMedicines");
+        medicineList.innerHTML = "";
+        data.forEach(med => {
+            const listItem = document.createElement("li");
+            listItem.innerText = `${med.medicineName} assigned to ${med.patientName} - Quantity: ${med.quantity}`;
+            medicineList.appendChild(listItem);
+        });
+    })
+    .catch(error => console.error("Error fetching assigned medicines:", error));
+}
+
+
+
+
+document.getElementById("assignMedicineForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const patientId = document.getElementById("patientId").value;
+    const selectedMedicines = Array.from(document.getElementById("medicineSelect").selectedOptions);
+    const medicineIds = selectedMedicines.map(option => option.value);
+    const quantities = selectedMedicines.map(() => document.getElementById("quantity").value);
+
+    if (!medicineIds.length) {
+        alert("Please select at least one medicine!");
+        return;
+    }
+
+fetch(`/medicine/assign?patientId=${encodeURIComponent(patientId)}&medicineIds=${medicineIds.join(",")}&quantities=${quantities.join(",")}`, {
+    method: "POST"
+})
+
+    .then(response => response.text())
+    .then(message => {
+        document.getElementById("assignResult").innerText = message;
+        loadAssignedMedicines();
+    })
+    .catch(error => console.error("Error:", error));
+});
+
+
+        loadMedicines();
+        loadAssignedMedicines();
+
+
+                function logout() {
+                    window.location.href = "index.html"; // Redirect to login
+                }
+    </script>
+</main>
+</body>
+</html>

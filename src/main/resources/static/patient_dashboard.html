@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="dashboard_styles.css">
+</head>
+<body>
+<header>
+    <h2>Patient Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+</header>
+<main>
+    <p>Welcome, Patient! You can view your appointments and medical records here.</p>
+
+    <div id="treatment-plan">
+        <h3>Your Treatment Plan</h3>
+        <p id="plan-type">Loading...</p>
+    </div>
+
+    <section>
+        <h3>Your Assigned Medicines</h3>
+        <ul id="medicineList"></ul>
+    </section>
+
+    <script>
+        function loadMedicines() {
+            fetch(`/medicine/assigned/${patientId}`)
+            .then(response => response.json())
+            .then(data => {
+                const medicineList = document.getElementById("medicineList");
+                medicineList.innerHTML = "";
+                data.forEach(med => {
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+                        Medicine: <b>${med.medicine.name}</b> - Prescribed by <b>Dr. ${med.doctor.name}</b> - Quantity: ${med.quantity}
+                        <button onclick="purchaseMedicine(${med.id})" ${med.purchased ? 'disabled' : ''}>
+                            ${med.purchased ? 'Purchased' : 'Purchase'}
+                        </button>
+                    `;
+                    medicineList.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        function purchaseMedicine(patientMedicineId) {
+            fetch(`/medicine/purchase?patientMedicineId=${patientMedicineId}`, {
+                method: "PUT"
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                loadMedicines();  // Refresh the list
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+        // Load medicines when page loads
+        loadMedicines();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/api/treatment/getPlan?patientId=1")  // Replace with actual patient ID
+                .then(response => response.json())
+                .then(data => {
+                    if (data.planType) {
+                        document.getElementById("plan-type").textContent = "Subscribed to: " + data.planType;
+                    } else {
+                        document.getElementById("plan-type").textContent = "No treatment plan found.";
+                    }
+                })
+                .catch(error => console.error("Error fetching treatment plan:", error));
+        });
+
+        function logout() {
+            window.location.href = "index.html"; // Redirect to login
+        }
+    </script>
+</main>
+</body>
+</html>

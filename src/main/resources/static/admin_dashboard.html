@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="dashboard_styles.css">
+</head>
+<body>
+<header>
+    <h2>Admin Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+</header>
+<main>
+    <p>Welcome, Admin! Manage users and system settings here.</p>
+
+    <!-- User Management Table -->
+    <h3 class="center">User Management</h3>
+    <table>
+        <tr>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>patient1@gmail.com</td>
+            <td>Patient</td>
+            <td><button onclick="deleteUser(1)">Delete</button></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>doctor1@gmail.com</td>
+            <td>Doctor</td>
+            <td><button onclick="deleteUser(2)">Delete</button></td>
+        </tr>
+    </table>
+</main>
+<script>
+    function logout() {
+        window.location.href = "index.html"; // Redirect to login page
+    }
+
+    function deleteUser(userId) {
+        alert("User with ID " + userId + " deleted! (Implement backend)");
+    }
+</script>
+</body>
+</html>

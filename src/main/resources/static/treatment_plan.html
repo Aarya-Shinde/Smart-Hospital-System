@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Treatment Plan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <h2>Smart Hospital Management</h2>
+</nav>
+
+<div class="container">
+    <h2>Select Your Treatment Plan</h2>
+    <form id="treatmentPlanForm">
+        <label for="planType">Choose a plan:</label>
+        <select id="planType" required>
+            <option value="Modern">Modern</option>
+            <option value="Traditional">Traditional</option>
+            <option value="Homeopathy">Homeopathy</option>
+            <option value="Ayurvedic">Ayurvedic</option>
+        </select>
+        <button type="submit">Subscribe</button>
+    </form>
+    <p id="message"></p>
+</div>
+
+<footer>
+    <p>© 2025 Smart Hospital. All Rights Reserved.</p>
+</footer>
+
+<script src="treatment_plan.js"></script>
+
+</body>
+</html>
