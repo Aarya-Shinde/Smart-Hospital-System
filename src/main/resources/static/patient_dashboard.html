@@ -7,24 +7,111 @@
     <link rel="stylesheet" href="dashboard_styles.css">
 </head>
 <body>
-<header>
-    <h2>Patient Dashboard</h2>
-    <button onclick="logout()">Logout</button>
-</header>
-<main>
-    <p>Welcome, Patient! You can view your appointments and medical records here.</p>
 
-    <div id="treatment-plan">
-        <h3>Your Treatment Plan</h3>
-        <p id="plan-type">Loading...</p>
-    </div>
+<div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h3>Dashboard</h3>
+        <ul>
+            <li><a href="#" onclick="showSection('profile')">Profile</a></li>
+            <li><a href="#" onclick="showSection('treatment')">Treatment Plan</a></li>
+            <li><a href="#" onclick="showSection('medicines')">Assigned Medicines</a></li>
+            <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+    </aside>
 
-    <section>
-        <h3>Your Assigned Medicines</h3>
-        <ul id="medicineList"></ul>
-    </section>
+    <!-- Main Content -->
+    <main class="content">
+        <header>
+            <h2>Patient Dashboard</h2>
+            <p>Welcome, <span id="patientName">Patient</span>!</p>
+        </header>
 
-    <script>
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <h3>Patient Profile</h3>
+            <form id="profileForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password">
+
+                <button type="submit">Update Profile</button>
+            </form>
+            <p id="updateMessage" class="text-success"></p>
+        </section>
+
+        <!-- Treatment Plan Section -->
+        <section id="treatment" class="section hidden">
+            <h3>Your Treatment Plan</h3>
+            <p id="plan-type">Loading...</p>
+        </section>
+
+        <!-- Assigned Medicines Section -->
+        <section id="medicines" class="section hidden">
+            <h3>Your Assigned Medicines</h3>
+            <ul id="medicineList"></ul>
+        </section>
+    </main>
+</div>
+
+<script>
+<!--    Get the Logged-in User ID-->
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/api/auth/user")  // Endpoint to get the logged-in user
+            .then(response => response.json())
+            .then(user => {
+                sessionStorage.setItem("patientId", user.id);  // Store ID
+                loadPatientProfile(user.id);
+                loadMedicines(user.id);
+            })
+            .catch(error => console.error("Error fetching user:", error));
+    });
+
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        function loadPatientProfile() {
+            fetch(`/api/patient/profile/${patientId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("name").value = data.name;
+                document.getElementById("email").value = data.email;
+                document.getElementById("patientName").textContent = data.name;
+            })
+            .catch(error => console.error("Error loading profile:", error));
+        }
+
+        document.getElementById("profileForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const updatedData = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value || undefined
+            };
+
+            fetch(`/api/patient/update/${patientId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.text())
+            .then(message => {
+                document.getElementById("updateMessage").textContent = message;
+                loadPatientProfile();
+            })
+            .catch(error => console.error("Error updating profile:", error));
+        });
+
         function loadMedicines() {
             fetch(`/medicine/assigned/${patientId}`)
             .then(response => response.json())
@@ -45,30 +132,16 @@
             .catch(error => console.error("Error:", error));
         }
 
-        function purchaseMedicine(patientMedicineId) {
-            fetch(`/medicine/purchase?patientMedicineId=${patientMedicineId}`, {
-                method: "PUT"
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert(data);
-                loadMedicines();  // Refresh the list
-            })
-            .catch(error => console.error("Error:", error));
-        }
-
-        // Load medicines when page loads
-        loadMedicines();
-
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("/api/treatment/getPlan?patientId=1")  // Replace with actual patient ID
+            loadPatientProfile();
+            loadMedicines();
+
+            fetch("/api/treatment/getPlan?patientId=" + patientId)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.planType) {
-                        document.getElementById("plan-type").textContent = "Subscribed to: " + data.planType;
-                    } else {
-                        document.getElementById("plan-type").textContent = "No treatment plan found.";
-                    }
+                    document.getElementById("plan-type").textContent = data.planType
+                        ? "Subscribed to: " + data.planType
+                        : "No treatment plan found.";
                 })
                 .catch(error => console.error("Error fetching treatment plan:", error));
         });
@@ -76,7 +149,7 @@
         function logout() {
             window.location.href = "index.html"; // Redirect to login
         }
-    </script>
-</main>
+</script>
+
 </body>
 </html>

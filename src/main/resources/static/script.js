@@ -8,16 +8,16 @@
             registerForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const name = document.getElementById("regName").value.trim();
-                const username = document.getElementById("regUsername").value.trim();
+                const email = document.getElementById("regEmail").value.trim();
                 const password = document.getElementById("regPassword").value.trim();
                 const role = document.getElementById("regRole").value.toUpperCase().trim();
     
-                if (!name || !username || !password || !role) {
+                if (!name || !email || !password || !role) {
                     document.getElementById("message").innerText = "All fields are required!";
                     return;
                 }
     
-                const userData = { name, username, password, role };
+                const userData = { name, email, password, role };
     
                 const response = await fetch("http://localhost:8080/api/user/register", {
                     method: "POST",
@@ -34,18 +34,18 @@
         if (loginForm) {
             loginForm.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                const username = document.getElementById("loginUsername").value.trim();
+                const email = document.getElementById("loginEmail").value.trim();
                 const password = document.getElementById("loginPassword").value.trim();
     
-                if (!username || !password) {
-                    document.getElementById("message").innerText = "Please enter both username and password!";
+                if (!email || !password) {
+                    document.getElementById("message").innerText = "Please enter both email and password!";
                     return;
                 }
     
                 const response = await fetch("http://localhost:8080/api/user/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ email, password })
                 });
     
                 if (!response.ok) {

@@ -1,7 +1,8 @@
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom, #e3f2fd, #f0f8ff); /* Light ocean gradient */
+    color: #333;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -9,62 +10,139 @@ body {
 
 /* Navbar */
 .navbar {
-    background-color: #343a40;
+    background: #1b4f72;
+    padding: 2px;
 }
 
 .navbar-brand {
+    font-size: 1.5rem;
     font-weight: bold;
     color: white !important;
 }
 
-/* Main Content */
+.nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #b0e0e6; /* Light Ocean Shade */
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #1b4f72, #5dade2); /* Deep to Light Ocean */
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Main Content - Register & Login */
 .container {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 40px 20px;
 }
 
-/* Login & Register Card */
+/* Card Styling */
 .card {
     width: 100%;
-    max-width: 400px;
-    padding: 20px;
+    max-width: 450px;
+    padding: 25px;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: scale(1.02);
 }
 
 /* Input Fields */
 input, select, button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin: 8px 0;
-    border: 1px solid #ccc;
+    border: 1px solid #1b4f72;
     border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+input:focus, select:focus {
+    border-color: #5dade2;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(27, 79, 114, 0.5);
 }
 
 /* Buttons */
 button {
-    background: #28a745;
+    background: #1b4f72;
     color: white;
+    font-weight: bold;
     border: none;
     cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s ease;
+    transition: background 0.3s ease;
 }
 
 button:hover {
-    background: #218838;
+    background: #5dade2;
+}
+
+/* Services Section */
+.services {
+    background: white;
+    padding: 50px 20px;
+    text-align: center;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.service-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.service-box:hover {
+    transform: scale(1.05);
+}
+
+/* Testimonials Section */
+.testimonial {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Contact Section */
+.contact-section {
+    background: linear-gradient(to bottom, #5dade2, #1b4f72);
+    color: white;
+    text-align: center;
+    padding: 50px;
+    margin-top: 40px;
 }
 
 /* Footer */
 footer {
-    background: #343a40;
+    background: #1b4f72;
     color: white;
     text-align: center;
-    padding: 10px;
+    padding: 15px;
     width: 100%;
+    margin-top: auto;
+    font-size: 14px;
 }

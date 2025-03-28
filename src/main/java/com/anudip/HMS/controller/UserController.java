@@ -23,14 +23,14 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
         if (user.getName() == null || user.getName().trim().isEmpty() ||
-                user.getUsername() == null || user.getUsername().trim().isEmpty() ||
+                user.getEmail() == null || user.getEmail().trim().isEmpty() ||
                 user.getPassword() == null || user.getPassword().trim().isEmpty() ||
                 user.getRole() == null || user.getRole().trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Missing required fields: name, username, password, role.");
         }
 
-        if (userRepository.findByUsername(user.getUsername()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Email already registered!");
         }
@@ -41,10 +41,10 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully as " + user.getRole());
     }
 
-    // ✅ Login User
+    //  Login User
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@RequestBody User user) {
-        User existingUser = userRepository.findByUsername(user.getUsername());
+        User existingUser = userRepository.findByEmail(user.getEmail());
 
         if (existingUser == null || !user.getPassword().equals(existingUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
