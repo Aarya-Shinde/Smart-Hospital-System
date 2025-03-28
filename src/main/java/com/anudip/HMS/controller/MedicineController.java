@@ -62,7 +62,7 @@ public class MedicineController {
 
 
 
-    // ✅ Purchase assigned medicine (Patient)
+    // Purchase assigned medicine (Patient)
     @PutMapping("/purchase")
     public String purchaseMedicine(@RequestParam Long patientMedicineId) {
         Optional<PatientMedicine> patientMedicine = patientMedicineRepository.findById(patientMedicineId);
@@ -79,7 +79,7 @@ public class MedicineController {
         }
         return "Assigned medicine not found!";
     }
-    // ✅ Get all medicines assigned to a patient
+    //  Get all medicines assigned to a patient
     @GetMapping("/assigned/{patientId}")
     public ResponseEntity<?> getAssignedMedicines(@PathVariable Long patientId) {
         Optional<User> patient = userRepository.findById(patientId);

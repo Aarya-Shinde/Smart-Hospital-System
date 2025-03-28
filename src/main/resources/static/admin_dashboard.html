@@ -16,35 +16,67 @@
 
     <!-- User Management Table -->
     <h3 class="center">User Management</h3>
-    <table>
+    <table id="userTable">
+        <thead>
         <tr>
             <th>User ID</th>
             <th>Email</th>
             <th>Role</th>
             <th>Action</th>
         </tr>
-        <tr>
-            <td>1</td>
-            <td>patient1@gmail.com</td>
-            <td>Patient</td>
-            <td><button onclick="deleteUser(1)">Delete</button></td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>doctor1@gmail.com</td>
-            <td>Doctor</td>
-            <td><button onclick="deleteUser(2)">Delete</button></td>
-        </tr>
+        </thead>
+        <tbody></tbody> <!-- Users will be added here dynamically -->
     </table>
+
 </main>
 <script>
     function logout() {
         window.location.href = "index.html"; // Redirect to login page
     }
 
-    function deleteUser(userId) {
-        alert("User with ID " + userId + " deleted! (Implement backend)");
-    }
+function deleteUser(userId) {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+
+    fetch(`http://localhost:8080/api/user/delete/${userId}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(msg => { throw new Error(msg); });
+        }
+        return response.text();
+    })
+    .then(msg => {
+        alert(msg);
+        location.reload(); // Refresh page to update user list
+    })
+    .catch(error => alert("Error: " + error.message));
+}
+
+<!--When the admin dashboard loads, it fetches and displays all users.-->
+
+    document.addEventListener("DOMContentLoaded", fetchUsers);
+
+function fetchUsers() {
+    fetch("http://localhost:8080/api/user/all")
+        .then(response => response.json())
+        .then(users => {
+            let userTable = document.querySelector("#userTable tbody");
+            userTable.innerHTML = ""; // Clear previous data
+
+            users.forEach(user => {
+                let row = `<tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.role}</td>
+                    <td><button onclick="deleteUser(${user.id})">Delete</button></td>
+                </tr>`;
+                userTable.innerHTML += row;
+            });
+        })
+        .catch(error => console.error("Error fetching users:", error));
+}
+
 </script>
 </body>
 </html>
